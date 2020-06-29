@@ -1,0 +1,37 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+<div class="row">
+	<div class="col-12 col-xs-12 col-sm-11 col-md-10 col-xl-10 mx-auto mx-xs-auto col-sm-auto col-md-auto">
+		{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+			<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
+		<h1 class="jumbotron">This is the best platform</h1>
+		<div class="spinner-border text-primary" role="status">
+		  <span class="sr-only">Loading...</span>
+		</div>
+		
+		<button id='jobscheck'>check news</button>
+	</div>
+</div>
+<script>
+$("#jobscheck").click(function(){
+$.ajax({
+		url : "{%url 'check_new_jobs'%}",
+		type : 'get',
+		data : {},
+		success : function(json){
+		alert('success');
+		console.log(json);
+		},
+		error : function(xhr,errmsg,err) {
+		  console.log(xhr.responseText);
+		}
+});
+});
+</script>
+{%endblock content%}

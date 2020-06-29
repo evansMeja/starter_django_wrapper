@@ -1,0 +1,26 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+<div class="container">
+    <div class="container" id='myformdata'>
+    <div id="result" class="alert alert-info log"><h4>Post Notification</h4></div>
+    <form method='post' action='{%url "registeruser"%}' id='myform'>
+        {%csrf_token%}
+        <div class="form-group">
+        <select class="form-control formclass">
+            {%for x in categories_list%}
+                <option>{{x.name}}</option>
+            {%endfor%}
+        </select>
+        </div>
+        <div class="form-group">
+            <textarea placeholder="type your quote here" class="form-control formclass" required></textarea><br>
+        </div> 
+    </form> 
+    <div class="form-group">
+        <button class="form-control btn btn-info" id="submit">Post</button>
+    </div>
+
+    </div>
+      
+</div>
+{%endblock content%}

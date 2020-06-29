@@ -1,0 +1,37 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+<div class="container">
+    <div class="container" id='myformdata'>
+    <div id="result" class="alert alert-info log"><h4>Invite Customers</h4></div>
+    <form method='post' action='{%url "send_subscriber_prompt" request.user.username%}' id='myform'>
+        {%csrf_token%}
+        <div class="form-group">
+            <input name="phone" placeholder="Enter phone number e.g 254740664839" type="text" class="form-control formclass" required><br>
+        </div> 
+    </form>
+   
+    <div class="form-group">
+        <button class="form-control btn btn-info" id="submit">Invite</button>
+    </div>
+
+    </div>
+      
+</div>
+<script>
+(function(formid){
+    $("#submit").click(function(){
+        $.ajax({
+            url : $(formid).attr('action'),
+            type : $(formid).attr('method'),
+            data : $(formid).serialize(),
+            success : function(json){
+                alert(json.StatusMessage);
+            },
+            error : function(xhr,errmsg,err) {
+                alert(xhr.responseText);
+            }
+        });
+    });
+})($("#myform"));
+</script>
+{%endblock content%}

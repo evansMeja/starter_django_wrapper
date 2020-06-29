@@ -1,0 +1,46 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+
+<div class="container">
+    <div class="container" id='myformdata'>
+    <div id="result" class="alert alert-info log"><h1>add category</h1></div>
+    <form method='post' action="{%url 'addnewcategoryapi' request.user.username%}" id='myform'>
+        {%csrf_token%}
+        <div class="form-group">
+            <input placeholder="enter category" class="form-control" required><br>
+        </div> 
+    </form>
+   
+    
+    <div class="form-group">
+        <button class="form-control btn btn-info" id="submit">Save</button>
+    </div>
+
+    </div>
+      
+</div>
+
+<script>
+$("#submit").click(function(){
+    formid = $("#myform");
+    $.ajax({
+        url : $(formid).attr('action'),
+        type : $(formid).attr('method'),
+        data : $(formid).serialize(),
+        success : function(json){
+            if(json.category_exists){
+                alert("sorry category exists");
+            }
+            if(json.saved){
+                alert("saved");
+            }
+        },
+        error : function(xhr,errmsg,err) {
+            alert(xhr.responseText)
+            $("#result").html("check your internet connection");
+        }
+    });
+});
+</script>
+
+{%endblock content%}

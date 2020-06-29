@@ -1,0 +1,81 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+<div class="row">
+	<div class="col-10 col-xs-10 col-sm-6 col-md-6 col-xl-6 mx-auto mx-xs-auto col-sm-auto col-md-auto">
+		<div id='myformdata'>
+			<h3 id="result" class="shadow-sm p-3 mb-2 bg-white rounded  log text-center">Create Account</h3>
+			<form class="shadow p-3 mb-2 bg-white rounded" method='post' action='{%url "registeruser"%}' id='myform'>
+				{%csrf_token%}
+				<div class="form-group">
+					<input placeholder="first name" class="form-control formclass" type="text" name="first_name" required><br>
+				</div> 
+				<div class="form-group">
+					<input placeholder="last name" class="form-control formclass" type="text" name="last_name" required><br>
+				</div>
+				<div class="form-group">
+					<input placeholder="email e.g evanslagat911@gmail.com" class="form-control formclass" type="email" name="email" required><br>
+				</div> 
+				<div class="form-group">
+					<input placeholder="password" class="form-control formclass" type="password" name="password" required><br>
+				</div> 
+				<div class="form-group">
+					<input placeholder="confirm password" class="form-control formclass" type="password" name="password2" required><br>
+				</div>	
+				<div class="form-group">
+					<button class="shadow mb-5 bg-primary form-control btn btn-info" id="submit">create account</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="application/javascript">
+function validateForm(formclass) {
+    var valid = true;
+    $(formclass).each(function () {
+        valid &= !!$(this).val();
+        if(valid == false){
+            $(this).css("border","2px solid red");
+        }else{
+            $(this).css("border","1px solid black");
+        }
+    });
+    return valid;
+}
+
+
+$(document).ready(function(){
+    var initialText = $( ".log" ).text();
+    (function(initialText){
+        $("#submit").click(function(){
+            if(validateForm(".formclass")){
+                formid = $("#myform");
+                $.ajax({
+                    url : $(formid).attr('action'),
+                    type : $(formid).attr('method'),
+                    data : $(formid).serialize(),
+                    success : function(json){
+                        if(json.email_exists){
+                            $("#result").html("sorry a user with that email already exists. <a href='#'>reset?</a>");
+                        }else if(json.phone_exists){
+                            $("#result").html("sorry a user with that phonr already exists. <a href='#'>reset?</a>");
+                        }else{
+                            $("#myformdata").html("Thank you. Account activation link has been sent to your email.");
+                            $("#result").html("").remove();
+                        }
+                    },
+                    error : function(xhr,errmsg,err) {
+                        alert(xhr.responseText)
+                        $("#result").html("check your internet connection");
+                    }
+                });
+            }
+	    });	
+        $( document ).ajaxStart(function() {
+            $( ".log" ).text( "Loading...." );
+        });
+
+    })(initialText);
+});  
+</script>
+{%endblock content%}

@@ -1,0 +1,66 @@
+{%extends 'layouts/base.html'%}
+{%block content%}
+<div class="row">
+	<div class="col-10 col-xs-10 col-sm-6 col-md-6 col-xl-6 mx-auto mx-xs-auto col-sm-auto col-md-auto my-5">
+	
+	<p class="lead">
+  This is a starter template by Evans Kiprotich Kiplagat
+</p>
+	
+		<h3 class="shadow-sm p-3 mb-5 bg-white rounded text-center mb-5">Check My Portal</h3>
+		<form class="shadow p-3 mb-3 bg-white rounded " id="myform" method='post' action='{%url "validatelogin"%}'>{%csrf_token%}
+			<div class="form-group">
+				<input placeholder="enter your email" class="formclass form-control" type='text' name="email" required>
+			</div>
+			<div class="form-group">
+				<input placeholder="enter your password" class="formclass form-control" type="password" name="password" required><br>
+			</div>			
+			<div class="form-group mt-3">
+				<button class="shadow mb-5 bg-primary form-control btn btn-info" id="submit">Login</button>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+    function validateForm(formclass) {
+        var valid = true;
+        $(formclass).each(function () {
+            valid &= !!$(this).val();
+            if(valid == false){
+                $(this).css("border","2px solid red");
+            }else{
+                $(this).css("border","1px solid black");
+            }
+        });
+        return valid;
+    }
+
+
+    $("#submit").click(function(){
+        if(validateForm(".formclass")){
+                formid = $("#myform");
+                $.ajax({
+                    url : $(formid).attr('action'),
+                    type : $(formid).attr('method'),
+                    data : $(formid).serialize(),
+                    success : function(json){
+                        console.log(json);
+                        if(json.supplier_exists){
+                            if(json.logged_in){
+								window.location.href = json.redirect_link
+                            }else{
+                                alert("unable to login");
+                            }
+                        }else{
+                            alert("supplier with that email does not exist")
+                        }
+                    },
+                    error : function(xhr,errmsg,err) {
+                        alert(xhr.responseText)
+                        $("#result").html("check your internet connection");
+                    }
+                });
+            }
+    });
+</script>
+{%endblock content%}
